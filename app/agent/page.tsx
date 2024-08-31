@@ -1,26 +1,25 @@
 "use client"
 
 import React, { useState } from "react";
-import Link from "next/link"
 import styles from "@/styles/R2RWebDevTemplate.module.css";
-import Answer from "@/components/answer"
+import Answer from "@/components/answer";
 
 const R2RQueryApp: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const performQuery = async () => {
     setIsLoading(true);
-    setResult("");
+    setResult([]);
 
     try {
-      const response = await fetch("/api/rag", {
+      const response = await fetch("/api/agent", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query }), // You'd usually anticipate passing an array of messages here. The r2r-js client does NOT maintain the conversation context for you.
       });
       
       if (!response.ok) {
@@ -43,7 +42,7 @@ const R2RQueryApp: React.FC = () => {
       <h1 className={styles.title}>R2R Web Dev Template</h1>
       <p>
         {" "}
-        A simple template for making RAG queries with R2R. Make sure that your
+        A simple template for making AGENT queries with R2R. Make sure that your
         R2R server is up and running, and that you've ingested files!
       </p>
       <p>
@@ -57,7 +56,7 @@ const R2RQueryApp: React.FC = () => {
         </a>{" "}
         for more information.
       </p>
-      <p>Also available in this template are <Link href="/agent">Agent</Link> and <Link href="/search">Search</Link> examples</p>
+      <p>See /app/api/search/route.ts for implementation detail</p>
       <input
         type="text"
         value={query}
@@ -74,10 +73,17 @@ const R2RQueryApp: React.FC = () => {
       </button>
       {isLoading ? (
         <div className={styles.spinner} />
-      ) : (
-        <div className={styles.resultDisplay}>
-          <Answer message = {result}/></div>
-      )}
+      ) : result.length > 0 ? ( 
+          <div>
+            <div className={styles.resultDisplay}>
+              <Answer message = {result[result.length -1 ].content}/>
+            </div>
+            <div>
+              {result.map(r=><p>{JSON.stringify(r)}</p>)}
+            </div>
+          </div>
+        ) : <div/>
+      }
     </div>
   );
 };

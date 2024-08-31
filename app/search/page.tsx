@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from "react";
-import Link from "next/link"
 import styles from "@/styles/R2RWebDevTemplate.module.css";
 import Answer from "@/components/answer"
 
@@ -57,7 +56,7 @@ const R2RQueryApp: React.FC = () => {
         </a>{" "}
         for more information.
       </p>
-      <p>Also available in this template are <Link href="/agent">Agent</Link> and <Link href="/search">Search</Link> examples</p>
+      <p>See /app/api/search/route.ts for implementation detail</p>
       <input
         type="text"
         value={query}
@@ -76,7 +75,8 @@ const R2RQueryApp: React.FC = () => {
         <div className={styles.spinner} />
       ) : (
         <div className={styles.resultDisplay}>
-          <Answer message = {result}/></div>
+          <Answer message={result}/>
+        </div>
       )}
     </div>
   );
